@@ -22,7 +22,6 @@ public class InterfataGrafica extends JFrame {
     private JPanel mainContentPanel;
     private CardLayout cardLayout;
 
-    // Culori & Stil
     private final Color SIDEBAR_COLOR = new Color(33, 37, 41);
     private final Color ACCENT_COLOR = new Color(13, 110, 253);
     private final Color TEXT_COLOR = new Color(248, 249, 250);
@@ -43,10 +42,9 @@ public class InterfataGrafica extends JFrame {
         mainContentPanel = new JPanel(cardLayout);
         mainContentPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // --- ECRANE ---
+        // Screens
         mainContentPanel.add(new DashboardHomePanel(), "HOME");
         mainContentPanel.add(new ClientiMasiniPanel(), "DATA");
-        // Aici este noul panou AI modificat
         mainContentPanel.add(new AIDevizPanel(), "AI");
 
         add(mainContentPanel, BorderLayout.CENTER);
@@ -102,9 +100,7 @@ public class InterfataGrafica extends JFrame {
         return btn;
     }
 
-    // =================================================================================
-    // PANOU 1: DASHBOARD
-    // =================================================================================
+    // Screen 1: DASHBOARD
     class DashboardHomePanel extends JPanel {
         public DashboardHomePanel() {
             setLayout(new GridLayout(2, 2, 20, 20));
@@ -138,9 +134,7 @@ public class InterfataGrafica extends JFrame {
         }
     }
 
-    // =================================================================================
-    // PANOU 2: CLIENTI & MASINI
-    // =================================================================================
+    // Screen 2: CLIENTS & CARS
     class ClientiMasiniPanel extends JPanel {
         private JTable tableClienti, tableMasini;
         private DefaultTableModel modelClienti, modelMasini;
@@ -184,7 +178,7 @@ public class InterfataGrafica extends JFrame {
 
             add(panelStanga); add(panelDreapta);
 
-            // Functionalitate
+            // Functionality
             Runnable refreshAll = () -> {
                 modelClienti.setRowCount(0);
                 modelMasini.setRowCount(0);
@@ -204,7 +198,7 @@ public class InterfataGrafica extends JFrame {
             refreshAll.run();
         }
 
-        // Dialoguri Adaugare (Condensed)
+        // Dialogs
         private void showAddClientDialog() {
             JDialog d = new JDialog(InterfataGrafica.this, "Client Nou", true); d.setSize(300, 250); d.setLocationRelativeTo(this);
             d.setLayout(new GridLayout(4, 2));
@@ -249,9 +243,7 @@ public class InterfataGrafica extends JFrame {
         }
     }
 
-    // =================================================================================
-    // PANOU 3: AI DEVIZIER SI ESTIMATOR (Nou si Complet Refacut)
-    // =================================================================================
+    // Screen 3: ESTIMATOR
     class AIDevizPanel extends JPanel {
         private JComboBox<String> comboMasini;
         private JTextField txtManopera;
@@ -260,9 +252,9 @@ public class InterfataGrafica extends JFrame {
         private JButton btnCalculeaza;
 
         public AIDevizPanel() {
-            setLayout(new GridLayout(1, 2, 20, 20)); // Impartim ecranul in 2: Formular si Rezultat
+            setLayout(new GridLayout(1, 2, 20, 20));
 
-            // --- 1. PARTEA STANGA (Formular Input) ---
+            // Input (left side)
             JPanel panelInput = new JPanel(new GridBagLayout());
             panelInput.setBorder(new TitledBorder("📝 Detalii Reparație"));
             GridBagConstraints gbc = new GridBagConstraints();
@@ -270,7 +262,7 @@ public class InterfataGrafica extends JFrame {
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.weightx = 1.0;
 
-            // Selectie Masina
+            // Select car
             gbc.gridx = 0; gbc.gridy = 0;
             panelInput.add(new JLabel("Alege Mașina din Service:"), gbc);
 
@@ -284,7 +276,7 @@ public class InterfataGrafica extends JFrame {
             gbc.gridy = 2;
             panelInput.add(btnRefreshMasini, gbc);
 
-            // Descriere Manopera
+            // Reparation description
             gbc.gridy = 3;
             panelInput.add(new JLabel("Descriere Manoperă (ex: Schimb distribuție):"), gbc);
             txtManopera = new JTextField();
@@ -292,7 +284,7 @@ public class InterfataGrafica extends JFrame {
             gbc.gridy = 4;
             panelInput.add(txtManopera, gbc);
 
-            // Piese Folosite
+            // Parts used
             gbc.gridy = 5;
             panelInput.add(new JLabel("Piese & Consumabile (ex: Kit curea, pompă apă):"), gbc);
             txtPiese = new JTextArea(4, 20);
@@ -301,18 +293,18 @@ public class InterfataGrafica extends JFrame {
             gbc.gridy = 6;
             panelInput.add(new JScrollPane(txtPiese), gbc);
 
-            // Buton Actiune
+            // Action button
             btnCalculeaza = new JButton("✨ Generează Deviz Estimativ cu AI");
             btnCalculeaza.setBackground(ACCENT_COLOR);
             btnCalculeaza.setForeground(Color.WHITE);
             btnCalculeaza.setFont(new Font("Segoe UI", Font.BOLD, 14));
             btnCalculeaza.setCursor(new Cursor(Cursor.HAND_CURSOR));
             gbc.gridy = 7;
-            gbc.ipady = 20; // Buton mai inalt
+            gbc.ipady = 20; 
             panelInput.add(btnCalculeaza, gbc);
 
 
-            // --- 2. PARTEA DREAPTA (Rezultat AI) ---
+            // Output (right side)
             JPanel panelOutput = new JPanel(new BorderLayout());
             panelOutput.setBorder(new TitledBorder("🤖 Deviz Generat & Estimare Preț"));
 
@@ -328,7 +320,7 @@ public class InterfataGrafica extends JFrame {
             add(panelInput);
             add(panelOutput);
 
-            // --- ACTIUNE BUTON ---
+            // Action button
             btnCalculeaza.addActionListener(e -> genereazaDeviz());
         }
 
@@ -358,34 +350,34 @@ public class InterfataGrafica extends JFrame {
                 return;
             }
 
-            // --- CONSTRUIRE PROMPT INTELIGENT (MODIFICAT PENTRU MATEMATICA) ---
+            // Prompt
             String systemPrompt =
-                    "Ești un calculator de devize auto expert și PRECIS.\n" +
-                            "TARIF ORAR SERVICE: 150 RON.\n\n" +
-                            "SARCINA TA:\n" +
-                            "Analizează cererea și generează un deviz. Trebuie să respecți următorii pași logici și matematici:\n\n" +
-                            "PASUL 1: Estimează costul pieselor (scrie doar valoarea, ex: 500 RON).\n" +
-                            "PASUL 2: Estimează timpul de lucru în ore.\n" +
-                            "PASUL 3: Calculează Cost Manoperă = Ore * 150 RON.\n" +
-                            "PASUL 4: Calculează TOTAL = Cost Piese + Cost Manoperă. (Verifică adunarea de două ori!).\n\n" +
-                            "FORMATUL FINAL AL RĂSPUNSULUI (Te rog respectă structura):\n" +
-                            "--------------------------------------------------\n" +
-                            "🛠️ DEVIZ ESTIMATIV: [Mașina]\n" +
-                            "--------------------------------------------------\n" +
-                            "1. DESCRIERE TEHNICĂ:\n" +
-                            "[Descriere scurtă a problemei]\n\n" +
-                            "2. PIESE NECESARE:\n" +
-                            "[Lista piese] -> Estimat: [Preț Piese] RON\n\n" +
-                            "3. MANOPERĂ:\n" +
-                            "[Nr Ore] ore x 150 RON/oră = [Cost Manoperă] RON\n\n" +
-                            "==================================================\n" +
-                            "💰 TOTAL ESTIMAT: [Suma Exactă] RON\n" +
-                            "==================================================\n" +
-                            "[Mesaj scurt de încheiere]\n\n" +
-                            "DATE INTRARE:\n" +
-                            "Mașina: " + masinaSelectata + "\n" +
-                            "Operațiune: " + manopera + "\n" +
-                            "Piese: " + piese + "\n";
+                "You are an expert, deterministic Automotive Estimation Engine operating as a backend API. Your job is to calculate repair costs with 100% mathematical precision based on the input data provided.\n" +
+                "BASE LABOR RATE: 150 RON/hour.\n\n" +
+                "ALGORITHMIC PIPELINE:\n" +
+                "STEP 1: Extract or estimate the baseline cost for parts (output numeric value only for calculations).\n" +
+                "STEP 2: Determine the standard industry labor time required in fractional or whole hours.\n" +
+                "STEP 3: Compute Labor Cost = Hours * 150 RON.\n" +
+                "STEP 4: Compute TOTAL = Parts Cost + Labor Cost. Double-check your arithmetic internally before formatting the output.\n\n" +
+                "OUTPUT FORMAT CONSTRAINTS:\n" +
+                "You must return the response using this exact structure. Do not alter the headings, do not add conversational pleasantries, and ensure all descriptive text is in English.\n\n" +
+                "--------------------------------------------------\n" +
+                "🛠️ REPAIR ESTIMATE: [" + masinaSelectata + "]\n" +
+                "--------------------------------------------------\n" +
+                "1. TECHNICAL DESCRIPTION:\n" +
+                "[Brief technical breakdown of the reported diagnostic issue]\n\n" +
+                "2. REQUIRED PARTS:\n" +
+                "[" + piese + "] -> Estimated: [Computed Parts Value] RON\n\n" +
+                "3. LABOR AND MANPOWER:\n" +
+                "[Computed Hours] hours x 150 RON/hour = [Computed Labor Cost] RON\n\n" +
+                "==================================================\n" +
+                "💰 TOTAL ESTIMATION: [Sum of Parts + Labor] RON\n" +
+                "==================================================\n" +
+                "[Standard professional disclaimer: 'This is an algorithmic projection; actual workshop costs may vary based on component tiers.']\n\n" +
+                "INPUT METRICS:\n" +
+                "Vehicle Profile: " + masinaSelectata + "\n" +
+                "Requested Operation: " + manopera + "\n" +
+                "Supplied Components/Notes: " + piese + "\n";
 
             // UI Loading state
             txtRezultatAI.setText("⏳ AI-ul calculează costurile și verifică totalul... Te rog așteaptă...");
@@ -402,9 +394,9 @@ public class InterfataGrafica extends JFrame {
                     try {
                         String raspuns = get();
                         txtRezultatAI.setText(raspuns);
-                        txtRezultatAI.setCaretPosition(0); // Scroll sus
+                        txtRezultatAI.setCaretPosition(0); // Scroll up
                     } catch (Exception ex) {
-                        txtRezultatAI.setText("Eroare: Nu am putut genera devizul.");
+                        txtRezultatAI.setText("Eroare: Couldnt generate the output!");
                     } finally {
                         btnCalculeaza.setEnabled(true);
                     }
