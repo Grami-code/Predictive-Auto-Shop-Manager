@@ -4,12 +4,11 @@ import okhttp3.*;
 import org.json.JSONObject;
 
 /**
- * Serviciu pentru conectarea la API-ul OpenAI.
+ * The service for API connection
  *
- * Clasa OpenAIService trimite prompt-uri catre AI
- * si primeste raspunsuri generate automat.
- * Poate fi folosita pentru generarea automata de descrieri,
- * sugestii sau alte texte legate de reparatii.
+ * OpenAIService class sends prompts to AI
+ * and gets generated answers in return.
+ * Can be used to generate description.
  */
 
 public class OpenAIService {
@@ -42,7 +41,7 @@ public class OpenAIService {
 
         try (Response response = client.newCall(request).execute()) {
 
-            if (!response.isSuccessful()) return "Eroare AI";
+            if (!response.isSuccessful()) return "AI error";
 
             String rasp = response.body().string();
             JSONObject obj = new JSONObject(rasp);
@@ -55,11 +54,11 @@ public class OpenAIService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "Eroare la conexiunea cu AI";
+            return "Error at the AI connection";
         }
     }
 }
 
-//sa adaug ceva cu ai , gen sa bagi specificatiile masinii si el sa iti dea tipul de ulei , etc
+// you can enter the car specifications and the services that are needed and it'll generate the pricing based on that
 
 
