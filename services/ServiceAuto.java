@@ -6,14 +6,7 @@ import java.util.Scanner;
 
 import com.serviceauto.models.*;
 
-/**
- * Clasa principala pentru gestionarea service-ului auto.
- *
- * Aceasta clasa gestioneaza listele de clienti, masini,
- * programari si reparatii. De asemenea, ofera meniul
- * interactv pentru a adauga clienti, masini, programari
- * si a afisa detalii despre clienti si masinile lor.
- */
+// Main class
 
 public class ServiceAuto {
 
@@ -24,13 +17,6 @@ public class ServiceAuto {
     private List<Reparatie> reparatii;
 
     public ServiceAuto() {
-        // GRESEALA ANTERIOARA:
-        // clienti = ClientService.getTotiClientii();
-        // masini = MasinaService.getToateMasinile();
-        // Daca functiile nu returnau corect ID-urile sau proprietarId,
-        // "clientul nu exista" aparea.
-
-        // VARIANTA CORECTA: citim toti clientii si masinile din DB la start
         clienti = ClientService.getTotiClientii();
         masini = MasinaService.getToateMasinile();
         programari = new ArrayList<>();
@@ -53,24 +39,24 @@ public class ServiceAuto {
         boolean running = true;
 
         while (running) {
-            System.out.println("Introdu optiunea dorita");
-            System.out.println("1. Introdu client nou");
-            System.out.println("2. Introdu masina clientului");
-            System.out.println("3. Creeaza o programare");
-            System.out.println("4. Afiseaza detalii");
-            System.out.println("5. Afiseaza reparatiile");
-            System.out.println("0. Inchide programul");
+            System.out.println("Choose an option: ");
+            System.out.println("1. Enter a new client");
+            System.out.println("2. Enter client's car");
+            System.out.println("3. Create a schedule");
+            System.out.println("4. Show details");
+            System.out.println("5. Show the repairs");
+            System.out.println("0. Close the program");
 
             int optiune = Integer.parseInt(scanner.nextLine());
             System.out.println("\n");
 
             switch (optiune) {
                 case 1:
-                    System.out.println("Introdu numele");
+                    System.out.println("Enter your Last Name");
                     String nume = scanner.nextLine();
-                    System.out.println("Introdu prenume");
+                    System.out.println("Enter your First Name");
                     String prenume = scanner.nextLine();
-                    System.out.println("Introdu email");
+                    System.out.println("Enter your E-mail");
                     String email = scanner.nextLine();
 
                     Client c = new Client(nume, prenume, email);
@@ -78,22 +64,21 @@ public class ServiceAuto {
                     if(idClientDB > 0) {
                         c.setId(idClientDB);
                         clienti.add(c); // actualizam lista locala
-                        System.out.println("Client adaugat cu ID: " + idClientDB);
+                        System.out.println("New client with ID: " + idClientDB);
                     } else {
-                        System.out.println("Eroare la adaugarea clientului in DB!");
+                        System.out.println("Error at adding the client in the DB!");
                     }
                     break;
 
                 case 2:
 
-                    System.out.println("Introdu marca masinii");
+                    System.out.println("Enter the car's brand");
                     String marca = scanner.nextLine();
-                    System.out.println("Introdu modelul masinii");
+                    System.out.println("Enter the car's model");
                     String model = scanner.nextLine();
-                    System.out.println("Introdu id-ul proprietarului masinii");
+                    System.out.println("Enter the car owner's ID");
                     int proprietarId = Integer.parseInt(scanner.nextLine());
 
-                    // VERIFICARE: clientul exista in lista locala?
                     boolean clientExista = false;
                     for(Client cl : clienti) {
                         if(cl.getId() == proprietarId) {
@@ -103,34 +88,34 @@ public class ServiceAuto {
                     }
 
                     if(!clientExista) {
-                        System.out.println("Nu exista client cu acest ID!");
+                        System.out.println("There is no client with this ID!");
                         break;
                     }
 
-                    System.out.println("Introdu numarul de inmatriculare");
+                    System.out.println("Enter the licence plate number: ");
                     String numar = scanner.nextLine();
 
                     Masina m = new Masina(marca, model, proprietarId, numar);
                     int idMasinaDB = MasinaService.adaugaMasinaInDB(m);
                     if(idMasinaDB > 0) {
-                        m.setId(idMasinaDB); // daca clasa Masina are camp id
-                        masini.add(m); // actualizam lista locala
-                        System.out.println("Masina adaugata cu ID: " + idMasinaDB);
+                        m.setId(idMasinaDB);
+                        masini.add(m);
+                        System.out.println("New car's ID: " + idMasinaDB);
                     } else {
-                        System.out.println("Eroare la adaugarea masinii in DB!");
+                        System.out.println("Error at adding the new car in the DB!");
                     }
                     break;
 
                 case 3:
-                    System.out.println("Introdu ziua");
+                    System.out.println("Enter the day");
                     int ziua = Integer.parseInt(scanner.nextLine());
-                    System.out.println("Introdu luna");
+                    System.out.println("Enter the month");
                     int luna = Integer.parseInt(scanner.nextLine());
-                    System.out.println("Introdu anul");
+                    System.out.println("Enter the year");
                     int anul = Integer.parseInt(scanner.nextLine());
-                    System.out.println("Introdu ora");
+                    System.out.println("Enter the hour");
                     int ora = Integer.parseInt(scanner.nextLine());
-                    System.out.println("Introdu minutele");
+                    System.out.println("Enter the minutes");
                     int minute = Integer.parseInt(scanner.nextLine());
 
                     Programare p = new Programare(anul, luna, ziua, ora, minute);
@@ -138,15 +123,15 @@ public class ServiceAuto {
                     break;
 
                 case 4:
-                    System.out.println("Introdu id-ul clientului");
+                    System.out.println("Enter client's ID");
                     int clientId = Integer.parseInt(scanner.nextLine().trim());
                     boolean gasit = false;
 
                     for(Client cl : clienti) {
                         if(cl.getId() == clientId) {
                             gasit = true;
-                            System.out.println("Detalii client: " + cl);
-                            System.out.println("Masini detinute:");
+                            System.out.println("Client details: " + cl);
+                            System.out.println("Owned cars: ");
 
 
                             for(Masina mas : masini) {
@@ -159,18 +144,18 @@ public class ServiceAuto {
                     }
 
                     if(!gasit) {
-                        System.out.println("Acest client nu exista!");
+                        System.out.println("This client doesnt exist!");
                     }
                     break;
 
                 case (5):
-                    System.out.println("Titlul reparatiei:");
+                    System.out.println("Reparation title:");
                     String titlu = scanner.nextLine();
 
-                    System.out.println("Piese folosite:");
+                    System.out.println("Parts used:");
                     String piese = scanner.nextLine();
 
-                    System.out.println("Cost total:");
+                    System.out.println("Total cost:");
                     double cost = Double.parseDouble(scanner.nextLine());
 
                     System.out.println("Status:");
@@ -178,10 +163,10 @@ public class ServiceAuto {
 
                     Reparatie rep = new Reparatie(titlu, piese, cost, status);
 
-                    //introducere ai
-                    String prompt = "Genereaza o descriere profesionala pentru reparatia: " + titlu +
-                            ". Piesele folosite: " + piese +
-                            ". Pret: " + cost + " lei";
+                    // AI introduction
+                    String prompt = "Generate a professional description for this reparation: " + titlu +
+                            ". Parts used: " + piese +
+                            ". Price: " + cost + " lei";
 
                     String raspuns = OpenAIService.cereAI(prompt);
 
@@ -189,7 +174,7 @@ public class ServiceAuto {
 
                     reparatii.add(rep);
 
-                    System.out.println("Descriere AI generata:");
+                    System.out.println("Generated description");
                     System.out.println(raspuns);
                     break;
 
@@ -198,7 +183,7 @@ public class ServiceAuto {
                     break;
 
                 default:
-                    System.out.println("Optiune invalida!");
+                    System.out.println("Invalid option!");
             }
         }
     }
