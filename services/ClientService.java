@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ClientService {
 
-    // Adaugă client în DB și returnează ID-ul generat
+    // Add client in DB and return generated id
     public static int adaugaClientInDB(Client client) {
         String sql = "INSERT INTO Client (nume, prenume, email) VALUES (?, ?, ?)";
 
@@ -37,10 +37,10 @@ public class ClientService {
             e.printStackTrace();
         }
 
-        return -1; // dacă nu s-a putut adăuga clientul
+        return -1; 
     }
 
-    // Preia toți clienții din DB
+    // Get the clients from DB
     public static List<Client> getTotiClientii() {
         List<Client> clienti = new ArrayList<>();
         String sql = "SELECT * FROM Client";
@@ -67,7 +67,7 @@ public class ClientService {
     }
 
     /**
-     *  Afișează toți clienții din baza de date
+     *  Show every client
      */
     public static void afiseazaClienti() {
         String sql = "SELECT * FROM Client";
